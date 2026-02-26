@@ -57,3 +57,13 @@ Roadmap:
 2. Cross-language test vectors.
 3. Formal serialization spec.
 4. Third-party audit.
+
+
+## Operational Autonomy Model
+HKSC-4096 now includes a guarded autonomy loop for:
+- continuous monitoring,
+- automatic repair proposals,
+- adaptive worst-case simulations,
+- progressive optimization recommendations.
+
+Full decision delegation is constrained by policy: production secrets, irreversible migrations, and mainnet deploy actions remain human-gated.

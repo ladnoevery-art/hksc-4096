@@ -93,3 +93,13 @@ In **Settings → Security & analysis**, enable:
 - Dependabot security updates
 - Code scanning alerts
 - Secret scanning (and push protection if available)
+
+
+
+## 9) Safe autonomous loop
+
+- `automation/policy.yaml`: autonomy policy, escalation and guardrails.
+- `automation/autonomy_engine.py`: periodic health checks + worst-case simulation matrix + action plan.
+- `.github/workflows/autonomous-control-loop.yml`: scheduled every 6h to generate autonomy report artifact.
+
+> Mặc định dùng **safe-autonomy**: tự động giám sát/cải tiến/đề xuất và tự xử lý low-risk; các hành động high-risk vẫn yêu cầu escalation.

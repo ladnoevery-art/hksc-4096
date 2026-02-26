@@ -39,3 +39,10 @@ HKSC-4096 is organized into separable layers so crypto core, API bridge, and blo
 - Contract security workflow combining Slither + Echidna + Mythril.
 - CodeQL code scanning workflow for Python + JavaScript.
 - Dependabot for GitHub Actions and npm ecosystem updates.
+
+
+## Autonomous Development Plan (Guarded)
+- `automation/policy.yaml` defines decision boundaries, escalation rules, and worst-case simulation lanes.
+- `automation/autonomy_engine.py` runs health checks, simulation checks, and emits machine-readable status reports.
+- `.github/workflows/autonomous-control-loop.yml` executes every 6 hours to continuously monitor and recommend next actions.
+- The system is intentionally **safe-autonomy**: it can suggest/prepare low-risk actions, but high-risk domains still require human escalation.

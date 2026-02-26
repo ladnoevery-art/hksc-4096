@@ -1,0 +1,27 @@
+name: Autonomous Control Loop (Safe Mode)
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  control-loop:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Execute autonomy engine
+        run: python automation/autonomy_engine.py --report automation/report.json
+      - name: Upload autonomy report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: autonomy-report
+          path: automation/report.json
+          retention-days: 14

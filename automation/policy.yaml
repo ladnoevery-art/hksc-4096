@@ -1,0 +1,27 @@
+version: 1
+mode: safe-autonomy
+principles:
+  - reversible_changes_only
+  - test_before_after
+  - no_secret_mutation
+  - no_unreviewed_prod_deploy
+lanes:
+  monitor:
+    enabled: true
+    actions: [collect_metrics, detect_failures, detect_security_signals]
+  improve:
+    enabled: true
+    actions: [run_tests, suggest_refactors, suggest_docs_updates]
+  repair:
+    enabled: true
+    actions: [retry_failed_tasks, create_patch_branch, open_pr_draft]
+  worst_case_simulation:
+    enabled: true
+    actions: [chaos_ci_failure, dependency_breakage, auth_misconfig, rpc_outage]
+decision:
+  auto_apply:
+    allowed: [docs, ci_non_prod, test_non_prod]
+    forbidden: [prod_keys, prod_contract_deploy, destructive_migrations]
+  escalation:
+    required_for: [crypto_core_change, onchain_deploy, security_policy_change]
+    target: human_maintainer
