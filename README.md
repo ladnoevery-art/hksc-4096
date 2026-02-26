@@ -1,7 +1,5 @@
 # HKSC-4096
 
-HyperKnight Supercube Cryptosystem (`16x16x16 = 4096` cells).
-
 Bản này nâng cấp theo hướng **có thể sử dụng thực tế** và nối tiếp roadmap bạn đưa:
 - Cipher + planner deterministic (core crypto),
 - Flask bridge cho desktop/web UI,
@@ -82,7 +80,7 @@ python -m unittest discover -s tests -v
 
 ## 7) Security pipeline (expanded)
 
-- `contract-security.yml`: Slither + Echidna + Mythril in one pipeline.
+- `contract-security.yml`: Slither + Echidna + Mythril + Manticore in one pipeline.
 - `codeql.yml`: code scanning for Python + JavaScript/TypeScript.
 - `.github/dependabot.yml`: weekly dependency updates for GitHub Actions + npm.
 

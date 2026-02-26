@@ -60,3 +60,19 @@ jobs:
           name: mythril-report
           path: mythril-report.json
           retention-days: 14
+
+
+      - name: Install Manticore
+        run: |
+          python -m pip install manticore
+
+      - name: Manticore symbolic execution
+        run: |
+          manticore hksc-verifier-contract/contracts/HKSC_Verifier.sol --workspace manticore-out || true
+
+      - name: Upload Manticore workspace
+        uses: actions/upload-artifact@v4
+        with:
+          name: manticore-workspace
+          path: manticore-out
+          retention-days: 14
