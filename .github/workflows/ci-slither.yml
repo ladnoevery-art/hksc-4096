@@ -1,0 +1,38 @@
+name: CI/CD - Slither Security Gatekeeper
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - 'hksc-verifier-contract/contracts/**'
+      - 'hksc-verifier-contract/scripts/**'
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - 'hksc-verifier-contract/contracts/**'
+  workflow_dispatch:
+
+jobs:
+  slither-ci-cd:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Slither Analysis + Auto-fix
+        id: slither
+        uses: crytic/slither-action@v0.4.2
+        with:
+          target: 'hksc-verifier-contract/contracts/'
+          slither-args: '--autofix --fail-high --exclude-dependencies'
+          sarif: 'slither-results.sarif'
+          fail-on: high
+
+      - name: Upload Slither results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'slither-results.sarif'

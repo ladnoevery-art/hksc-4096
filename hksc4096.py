@@ -394,6 +394,10 @@ def _parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
     sim.add_argument("--cells", type=int, default=BLOCK_SIZE)
     _add_shared_planner_args(sim)
 
+    serve = sub.add_parser("serve", help="Run Flask API bridge for desktop/web UI")
+    serve.add_argument("--host", default="127.0.0.1")
+    serve.add_argument("--port", type=int, default=5000)
+
     return parser.parse_args(argv)
 
 
@@ -405,6 +409,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         planner = HKSCPlanner(args.seed.encode("utf-8"), cfg)
         digest = planner.run_transcript(args.cells)
         print(json.dumps({"digest": digest.hex(), "cells": args.cells, "planner": cfg.__dict__}, indent=2))
+        return 0
+
+    if args.cmd == "serve":
+        try:
+            from hksc_bridge import create_app
+        except Exception as exc:
+            raise SystemExit(f"Flask bridge unavailable: {exc}")
+        app = create_app()
+        app.run(host=args.host, port=args.port, debug=False)
         return 0
 
     passphrase = args.passphrase or getpass.getpass("Passphrase: ")
