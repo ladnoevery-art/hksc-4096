@@ -1,0 +1,62 @@
+name: Contract Security (Slither + Echidna + Mythril)
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - 'hksc-verifier-contract/**'
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - 'hksc-verifier-contract/**'
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Slither scan
+        uses: crytic/slither-action@v0.4.2
+        with:
+          target: 'hksc-verifier-contract/contracts/'
+          slither-args: '--fail-high --exclude-dependencies'
+          sarif: 'slither-results.sarif'
+
+      - name: Upload Slither SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'slither-results.sarif'
+
+      - name: Run Echidna fuzzing
+        uses: crytic/echidna-action@v2
+        with:
+          files: hksc-verifier-contract/contracts/HKSC_Verifier.sol
+          contract: HKSC_Verifier
+          config: hksc-verifier-contract/echidna.yaml
+
+      - name: Setup Python for Mythril
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Mythril
+        run: |
+          python -m pip install --upgrade pip
+          pip install mythril
+
+      - name: Mythril symbolic analysis
+        run: |
+          myth analyze hksc-verifier-contract/contracts/HKSC_Verifier.sol --solv 0.8.24 -o json > mythril-report.json
+
+      - name: Upload Mythril report
+        uses: actions/upload-artifact@v4
+        with:
+          name: mythril-report
+          path: mythril-report.json
+          retention-days: 14

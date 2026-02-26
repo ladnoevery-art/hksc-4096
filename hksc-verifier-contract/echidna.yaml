@@ -1,0 +1,6 @@
+testMode: assertion
+seqLen: 50
+testLimit: 20000
+workers: 2
+sender: ['0x10000', '0x20000', '0x30000']
+corpusDir: echidna-corpus

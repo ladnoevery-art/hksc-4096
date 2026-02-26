@@ -73,3 +73,23 @@ python -m unittest discover -s tests -v
 - Đây là thiết kế experimental/R&D.
 - Planner là abstraction hash-chain, không phải full Rubik group solver.
 - Không dùng cho dữ liệu tối mật production nếu chưa audit độc lập.
+
+
+## 6) Whitepaper & architecture docs
+
+- `docs/WHITEPAPER.md`: engineering draft, threat model, composition, roadmap.
+- `docs/ARCHITECTURE.md`: component boundaries, data-flow, and CI/security design.
+
+## 7) Security pipeline (expanded)
+
+- `contract-security.yml`: Slither + Echidna + Mythril in one pipeline.
+- `codeql.yml`: code scanning for Python + JavaScript/TypeScript.
+- `.github/dependabot.yml`: weekly dependency updates for GitHub Actions + npm.
+
+## 8) Enable repository security alerts (GitHub settings)
+
+In **Settings → Security & analysis**, enable:
+- Dependabot alerts
+- Dependabot security updates
+- Code scanning alerts
+- Secret scanning (and push protection if available)
