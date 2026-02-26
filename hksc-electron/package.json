@@ -1,0 +1,62 @@
+{
+  "name": "hksc-4096-apocalypse",
+  "version": "1.0.0",
+  "description": "HKSC-4096 – HyperKnight Supercube Cryptosystem with 3D visualization",
+  "main": "main.js",
+  "scripts": {
+    "start": "concurrently \"npm run python\" \"wait-on http://localhost:5000 && electron .\"",
+    "python": "python ../hksc-python/hksc_4096.py --flask",
+    "build": "electron-builder --publish never",
+    "release": "electron-builder --publish always",
+    "dev": "electron ."
+  },
+  "build": {
+    "appId": "org.hksc.4096",
+    "productName": "HKSC-4096 Apocalypse",
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": ["nsis", "portable"],
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": ["dmg", "zip"],
+      "icon": "assets/icon.icns"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "icon": "assets/icon.png"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "releaseType": "release"
+      }
+    ]
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "three": "^0.158.0",
+    "@react-three/fiber": "^8.15.0",
+    "@react-three/drei": "^9.92.0"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.0",
+    "concurrently": "^8.2.0",
+    "wait-on": "^7.2.0"
+  },
+  "keywords": [
+    "cryptography",
+    "rubiks-cube",
+    "zk-snark",
+    "time-lock",
+    "post-quantum",
+    "hksc-4096"
+  ],
+  "author": "HKSC Team",
+  "license": "MIT"
+}

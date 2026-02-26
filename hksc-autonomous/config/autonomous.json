@@ -1,0 +1,115 @@
+{
+  "system": {
+    "name": "HKSC-4096 Autonomous System",
+    "version": "1.0.0",
+    "mode": "full",
+    "description": "Self-healing, self-improving, self-evolving autonomous system for HKSC-4096"
+  },
+  "controller": {
+    "max_concurrent_tasks": 10,
+    "task_timeout": 300,
+    "auto_evolution": true,
+    "evolution_interval": 86400,
+    "conflict_resolution": "priority_based",
+    "backup_interval": 3600,
+    "metrics_retention_days": 30,
+    "enable_worst_case_simulation": true,
+    "simulation_frequency": 3600,
+    "decision_threshold": 0.75,
+    "silent_mode": false,
+    "autonomy_level": "full"
+  },
+  "agents": {
+    "upgrade": {
+      "enabled": true,
+      "check_interval": 3600,
+      "auto_upgrade_security": true,
+      "auto_upgrade_patch": true,
+      "auto_upgrade_minor": false,
+      "auto_upgrade_major": false,
+      "test_before_deploy": true,
+      "rollback_on_failure": true,
+      "backup_before_upgrade": true
+    },
+    "fix": {
+      "enabled": true,
+      "auto_fix_simple": true,
+      "auto_fix_medium": false,
+      "create_pr_for_complex": true,
+      "max_fix_attempts": 3,
+      "notify_on_fix": true,
+      "test_after_fix": true
+    },
+    "optimize": {
+      "enabled": true,
+      "auto_optimize": true,
+      "optimization_threshold": 0.1,
+      "max_optimizations_per_run": 10,
+      "test_after_optimize": true,
+      "categories": ["performance", "memory", "gas", "readability"]
+    }
+  },
+  "decision_engine": {
+    "min_confidence": 0.75,
+    "max_risk_tolerance": 0.3,
+    "auto_execute_threshold": 0.9,
+    "escalate_threshold": 0.5,
+    "learning_enabled": true,
+    "conflict_resolution_strategy": "priority_based"
+  },
+  "evolution": {
+    "population_size": 20,
+    "mutation_rate": 0.15,
+    "crossover_rate": 0.7,
+    "elitism": 0.1,
+    "max_generations": 100,
+    "target_fitness": 0.95,
+    "fitness_threshold": 0.7,
+    "diversity_threshold": 0.05,
+    "evaluation_runs": 5
+  },
+  "worst_case_simulation": {
+    "simulation_timeout": 300,
+    "max_concurrent_scenarios": 5,
+    "auto_improve": true,
+    "improvement_threshold": 0.8,
+    "scenarios": [
+      "security_attack",
+      "system_failure",
+      "network_partition",
+      "high_load",
+      "data_corruption",
+      "dependency_failure",
+      "resource_exhaustion",
+      "cascading_failure",
+      "byzantine_attack",
+      "quantum_attack"
+    ]
+  },
+  "notifications": {
+    "channels": ["github_issues", "slack", "email"],
+    "on_critical": true,
+    "on_security": true,
+    "on_failure": true,
+    "on_success": false,
+    "daily_summary": true
+  },
+  "safety": {
+    "max_cpu": 90.0,
+    "max_memory": 85.0,
+    "max_error_rate": 0.1,
+    "min_fitness": 0.5,
+    "emergency_stop_on_critical": true,
+    "require_approval_for": [
+      "major_upgrade",
+      "contract_deployment",
+      "breaking_change"
+    ]
+  },
+  "learning": {
+    "enabled": true,
+    "pattern_retention": 100,
+    "decay_factor": 0.95,
+    "exploration_rate": 0.1
+  }
+}
