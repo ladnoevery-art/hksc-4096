@@ -1,5 +1,7 @@
 # HKSC-4096
 
+HyperKnight Supercube Cryptosystem (16×16×16)
+
 Bản này nâng cấp theo hướng **có thể sử dụng thực tế** và nối tiếp roadmap bạn đưa:
 - Cipher + planner deterministic (core crypto),
 - Flask bridge cho desktop/web UI,
