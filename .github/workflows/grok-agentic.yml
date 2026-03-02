@@ -17,7 +17,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with: { token: ${{ secrets.GITHUB_TOKEN }} }
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Call Grok-4 Agentic (full Markdown mode)
         id: grok
@@ -29,7 +30,7 @@ jobs:
           RESPONSE=$(curl -s -X POST https://api.x.ai/v1/chat/completions \
             -H "Authorization: Bearer ${GROK_API_KEY}" \
             -H "Content-Type: application/json" \
-            -d @- <<EOF
+            -d @- <<'EOFX'
 {
   "model": "grok-4-2026",
   "messages": [
@@ -39,11 +40,11 @@ jobs:
     },
     {
       "role": "user",
-      "content": "${PROMPT}"
+      "content": "$PROMPT"
     }
   ]
 }
-EOF
+EOFX
           )
           
           echo "$RESPONSE" > grok_response.json
