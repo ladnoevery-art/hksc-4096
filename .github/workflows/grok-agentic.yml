@@ -6,7 +6,7 @@ on:
       prompt:
         description: 'Lệnh cho Grok-4'
         required: false
-        default: 'Tự động tiến hóa toàn bộ codebase: tối ưu bảo mật, thêm feature, tự fix, chuẩn bị nhân bản'
+        default: 'Tự động tiến hóa toàn bộ codebase'
   schedule:
     - cron: '0 */6 * * *'
 
@@ -20,35 +20,20 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Call Grok-4 Agentic (full Markdown mode)
+      - name: Call Grok-4 API
         id: grok
         env:
           GROK_API_KEY: ${{ secrets.GROK_API_KEY }}
         run: |
-          PROMPT="${{ github.event.inputs.prompt || 'Tự động tiến hóa toàn bộ codebase: tối ưu bảo mật, thêm feature, tự fix, chuẩn bị nhân bản' }}"
+          PROMPT="${{ github.event.inputs.prompt || 'Tự động tiến hóa toàn bộ codebase' }}"
           
-          RESPONSE=$(curl -s -X POST https://api.x.ai/v1/chat/completions \
+          curl -s -X POST https://api.x.ai/v1/chat/completions \
             -H "Authorization: Bearer ${GROK_API_KEY}" \
             -H "Content-Type: application/json" \
-            -d @- <<'EOFX'
-{
-  "model": "grok-4-2026",
-  "messages": [
-    {
-      "role": "system",
-      "content": "Bạn là HKSC-SENTIENT – Grok-4 Agentic Engine. Phân tích codebase và đề xuất cải tiến. Trả về JSON với: action, code_files, pr_title, reason, improvements"
-    },
-    {
-      "role": "user",
-      "content": "$PROMPT"
-    }
-  ]
-}
-EOFX
-          )
+            -d "{\"model\": \"grok-4-2026\", \"messages\": [{\"role\": \"system\", \"content\": \"Bạn là HKSC-SENTIENT - Grok-4 Agentic Engine\"}, {\"role\": \"user\", \"content\": \"$PROMPT\"}]}" \
+            > grok_response.json
           
-          echo "$RESPONSE" > grok_response.json
-          echo "$RESPONSE" | jq -r '.choices[0].message.content' > agentic_plan.json || echo '{}' > agentic_plan.json
+          cat grok_response.json | jq -r '.choices[0].message.content' > agentic_plan.json || echo '{}' > agentic_plan.json
 
       - name: Display Grok-4 Plan
         run: |
@@ -58,12 +43,6 @@ EOFX
           else
             echo "No plan generated"
           fi
-
-      - name: Audit Summary
-        run: |
-          echo "✅ Grok-4 Agentic workflow completed"
-          echo "📊 Plan generated and ready for review"
-          echo "📁 Artifacts: grok_response.json, agentic_plan.json"
 
       - name: Upload Artifacts
         if: always()
