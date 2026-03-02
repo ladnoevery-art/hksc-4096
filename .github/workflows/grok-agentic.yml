@@ -1,19 +1,20 @@
 name: Grok-4 Agentic Evolution
-
 on:
   workflow_dispatch:
     inputs:
       prompt:
-        description: 'Lệnh cho Grok-4'
+        description: Lệnh cho Grok-4
         required: false
-        default: 'Tự động tiến hóa toàn bộ codebase'
+        default: Tự động tiến hóa toàn bộ codebase
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: 0 */6 * * *
 
 jobs:
   agentic-evolve:
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
@@ -30,7 +31,7 @@ jobs:
           curl -s -X POST https://api.x.ai/v1/chat/completions \
             -H "Authorization: Bearer ${GROK_API_KEY}" \
             -H "Content-Type: application/json" \
-            -d "{\"model\": \"grok-4-2026\", \"messages\": [{\"role\": \"system\", \"content\": \"Bạn là HKSC-SENTIENT - Grok-4 Agentic Engine\"}, {\"role\": \"user\", \"content\": \"$PROMPT\"}]}" \
+            -d '{"model": "grok-4-2026", "messages": [{"role": "system", "content": "Bạn là HKSC-SENTIENT - Grok-4 Agentic Engine"}, {"role": "user", "content": "'"$PROMPT"'"}]}' \
             > grok_response.json
           
           cat grok_response.json | jq -r '.choices[0].message.content' > agentic_plan.json || echo '{}' > agentic_plan.json
