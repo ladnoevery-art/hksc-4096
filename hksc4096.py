@@ -196,7 +196,7 @@ class HKSC4096Cipher:
             raise HKSCError("Ciphertext too short for authentication tag")
         body = ciphertext[pos:-32]
         tag = ciphertext[-32:]
-        if not body or len(body) % BLOCK_SIZE != 0:
+        if len(body) % BLOCK_SIZE != 0:
             raise HKSCError("Invalid ciphertext body length")
 
         master = self._derive_master_key(salt)
