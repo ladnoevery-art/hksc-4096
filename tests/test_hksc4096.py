@@ -16,6 +16,12 @@ class TestHKSC4096(unittest.TestCase):
         decrypted = self.cipher.decrypt(encrypted)
         self.assertEqual(decrypted, data)
 
+    def test_round_trip_empty(self):
+        data = b""
+        encrypted = self.cipher.encrypt(data, salt=self.salt, nonce=self.nonce)
+        decrypted = self.cipher.decrypt(encrypted)
+        self.assertEqual(decrypted, data)
+
     def test_round_trip_block_plus(self):
         data = os.urandom(5000)
         encrypted = self.cipher.encrypt(data, salt=self.salt, nonce=self.nonce)
