@@ -11,7 +11,7 @@ import numpy as np
 import hashlib
 import json
 import os
-import random
+import secrets
 import struct
 import time
 from math import sqrt, floor
@@ -24,6 +24,15 @@ RATIO = sqrt(2)          # √2 : 1 fractional
 ADVERSARIAL_INTERVAL = 50
 ADVERSARIAL_PROB = 0.07  # 7% chance
 SEED_BYTES = 32
+
+
+def is_adversarial_step(adv_seed: bytes, step: int) -> bool:
+    """Deterministic adversarial toggle derived from seed + step."""
+    if step % ADVERSARIAL_INTERVAL != 0:
+        return False
+    digest = hashlib.sha3_256(adv_seed + step.to_bytes(8, "big")).digest()
+    value = int.from_bytes(digest[:8], "big") / (2**64)
+    return value < ADVERSARIAL_PROB
 
 # ============================================================================
 # Đoạn 2/18: Position3D & 3D Knight Moves (48 hướng tối đa)
@@ -58,7 +67,7 @@ def get_knight_moves(pos: Pos3D) -> List[Pos3D]:
                     nz = pos.z + sz * dz
                     if 0 <= nx < N and 0 <= ny < N and 0 <= nz < N:
                         deltas.append(Pos3D(nx, ny, nz))
-    random.shuffle(deltas)  # tăng randomness cho heuristic
+    secrets.SystemRandom().shuffle(deltas)  # stronger randomness for move ordering
     return deltas
 
 # ============================================================================
@@ -142,7 +151,7 @@ def hksc_keygen() -> Dict:
             dy = curr.y - prev.y
             dz = curr.z - prev.z
             axis, layer, turns = knight_to_twist((dx, dy, dz), i)
-            adv = (random.random() < ADVERSARIAL_PROB) and (i % ADVERSARIAL_INTERVAL == 0)
+            adv = is_adversarial_step(adv_seed, i)
             state.apply_twist(axis, layer, -turns, adv)  # inverse
     
     public = {
@@ -165,14 +174,12 @@ def hksc_keygen() -> Dict:
 # ============================================================================
 def derive_key_from_tour(tour: List[Tuple], adv_seed: bytes) -> bytes:
     state = HKSC_State()  # start solved
-    random.seed(adv_seed)
-    
     for i in range(len(tour)-1):
         prev = Pos3D(*tour[i])
         curr = Pos3D(*tour[i+1])
         dx, dy, dz = curr.x - prev.x, curr.y - prev.y, curr.z - prev.z
         axis, layer, turns = knight_to_twist((dx, dy, dz), i)
-        adv = (random.random() < ADVERSARIAL_PROB) and (i % ADVERSARIAL_INTERVAL == 0)
+        adv = is_adversarial_step(adv_seed, i)
         state.apply_twist(axis, layer, turns, adv)
     
     assert state.is_solved(), "Tour không self-solving!"
@@ -602,7 +609,9 @@ if __name__ == "__main__":
         # Run Flask server for Electron GUI
         print("🚀 Starting HKSC-4096 Flask API Server...")
         print(f"📡 Server running at http://localhost:5000")
-        app.run(host='0.0.0.0', port=5000, debug=False)
+        host = os.getenv('HKSC_API_HOST', '127.0.0.1')
+        port = int(os.getenv('HKSC_API_PORT', '5000'))
+        app.run(host=host, port=port, debug=False)
     else:
         # Run demo
         print("=" * 70)
